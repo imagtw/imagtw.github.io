@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Looading...</title>
+  <script type="text/javascript" src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+  <!-- <script type="text/javascript" src="https://cdn.bootcss.com/vConsole/3.3.0/vconsole.min.js"></script>
+  <script>
+  var vConsole = new VConsole();
+  </script> -->
+</head>
+
+<body>
+  <script>
+    var liffId = '1656774973-Z5la4M2z'; // Brand's liff id.
+
+    var today = moment().utcOffset('+08:00');
+    var day1201 = moment('2023-12-01').utcOffset('+08:00');
+    var day1225 = moment('2023-12-25').utcOffset('+08:00');
+
+    if (today < day1201) {
+      today = day1201;
+    } else if (today > day1225) {
+      today = day1225;
+    }
+    var textMsg = today.format('M月D日');
+
+    // Check if query string has text parameter.
+    const params = new URLSearchParams(window.location.search);
+    const value = params.get('text');
+    if (value) {
+      textMsg = value;
+    }
+
+    // Compose the message to send.
+    var messages = [
+      {
+          "type": "text",
+          "text": textMsg
+      }
+    ];
+
+    // Liff init and login, then send message, close window.
+    liff.init({ liffId: liffId })
+      .then(function() {
+        if (!liff.isLoggedIn()) {
+          return liff.login({
+            redirectUri: window.location.href
+          });
+        } else {
+          // Login success.
+          console.log('Login success.');
+
+          // Send message to Line.
+          if (liff.isInClient()) {
+            return liff.sendMessages(messages)
+              .then(function() {
+                console.log('Message sent.');
+                liff.closeWindow();
+              });
+          } else {
+            console.error('Only work in Line app.');
+          }
+        }
+      })
+      .catch(function(err) {
+        console.error(err.code, err.message);
+      });
+  </script>
+</body>
+
+</html>
