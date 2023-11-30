@@ -25,7 +25,7 @@
     } else if (today > day1225) {
       today = day1225;
     }
-    var textMsg = today.format('M月D日');
+    var textMsg = `DAY${today.format('D')}`;
 
     // Check if query string has text parameter.
     const params = new URLSearchParams(window.location.search);
